@@ -168,7 +168,7 @@ class TestPermutation(unittest.TestCase):
         self.assertEqual(sub_keys[14], '11111000011001100101010101111010101010110011001111000111')
         self.assertEqual(sub_keys[15], '11110000110011001010101011110101010101100110011110001111')
 
-    def test_compress_sub_keys(self):
+    def test_all(self):
         plain = des.ascii_to_bytes_arr('8787878787878787')
         key = des.ascii_to_bytes_arr('0E329232EA6D0D73')
 
