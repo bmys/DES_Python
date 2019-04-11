@@ -140,13 +140,14 @@ class TestPermutation(unittest.TestCase):
         result = des.p_box_substitution(sbox_output)
         self.assertEqual(desired, result)
 
-    def first_round(self):
+    def test_first_round(self):
         plain = des.text_to_arr('0010100111011000001000110011011100111100010101100100100111111011')
         key = des.text_to_arr('1101000111010100101000110101110010101010000100011101010010101010')
         result = des.encrypt(plain, key)
         desired = des.text_to_arr('1000001010011101110100111010110001101111011011000110111010010010')
 
         self.assertEqual(desired, result)
+
 
 
 

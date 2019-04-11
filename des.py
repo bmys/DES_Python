@@ -110,7 +110,34 @@ def final_permutation(arr):
     return rearrange(arr, tables.finalPermutationTable)
 
 
+def generate_sub_keys(key):
+    sub_keys = []
+    previous_key = key
+    for i in range(16):
+        previous_key = generate_sub_key(previous_key, i)
+        sub_keys.append(previous_key)
+    return sub_keys
+
+
 def encrypt(arr, key, encrypt=True):
+    ip = rearrange(arr, tables.initialPermutationTable)
+    key = rearrange(key, tables.keyPermutationTable)
+
+    l_block, r_block = split_half(ip)
+    new_left = r_block
+
+    sub_key = generate_sub_key(key, 0)
+    sub_key = rearrange(sub_key, tables.compressionPermutationTable)
+    r_block = rearrange(r_block, tables.extensionPermutationTable)
+    r_block = xor_arr(r_block, sub_key)
+    r_block = s_box_substitution(r_block)
+    r_block = rearrange(r_block, tables.pBlockPermutationTable)
+    r_block = xor_arr(r_block, l_block)
+
+    return new_left + r_block
+
+
+def decrypt(arr, key, encrypt=True):
     ip = rearrange(arr, tables.initialPermutationTable)
     key = rearrange(key, tables.keyPermutationTable)
 
