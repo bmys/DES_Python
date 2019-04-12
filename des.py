@@ -118,6 +118,8 @@ def generate_sub_keys(key):
         sub_keys.append(previous_key)
     return sub_keys
 
+def compress_keys():
+    pass
 
 def encrypt(arr, key, encrypt=True):
     ip = rearrange(arr, tables.initialPermutationTable)
