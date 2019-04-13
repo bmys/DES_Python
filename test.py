@@ -140,46 +140,10 @@ class TestPermutation(unittest.TestCase):
         result = des.p_box_substitution(sbox_output)
         self.assertEqual(desired, result)
 
-    def test_first_round(self):
-        plain = des.text_to_arr('0010100111011000001000110011011100111100010101100100100111111011')
-        key = des.text_to_arr('1101000111010100101000110101110010101010000100011101010010101010')
-        result = des.encrypt(plain, key)
-        desired = des.text_to_arr('1000001010011101110100111010110001101111011011000110111010010010')
-
-        self.assertEqual(desired, result)
-
     def test_sub_keys_generation(self):
         sub_keys = des.generate_sub_keys('11110000110011001010101011110101010101100110011110001111')
 
-        self.assertEqual(sub_keys[0], '11100001100110010101010111111010101011001100111100011110')
-        self.assertEqual(sub_keys[1], '11000011001100101010101111110101010110011001111000111101')
-        self.assertEqual(sub_keys[2], '00001100110010101010111111110101011001100111100011110101')
-        self.assertEqual(sub_keys[3], '00110011001010101011111111000101100110011110001111010101')
-        self.assertEqual(sub_keys[4], '11001100101010101111111100000110011001111000111101010101')
-        self.assertEqual(sub_keys[5], '00110010101010111111110000111001100111100011110101010101')
-        self.assertEqual(sub_keys[6], '11001010101011111111000011000110011110001111010101010110')
-        self.assertEqual(sub_keys[7], '00101010101111111100001100111001111000111101010101011001')
-        self.assertEqual(sub_keys[8], '01010101011111111000011001100011110001111010101010110011')
-        self.assertEqual(sub_keys[9], '01010101111111100001100110011111000111101010101011001100')
-        self.assertEqual(sub_keys[10], '01010111111110000110011001011100011110101010101100110011')
-        self.assertEqual(sub_keys[11], '01011111111000011001100101010001111010101010110011001111')
-        self.assertEqual(sub_keys[12], '01111111100001100110010101010111101010101011001100111100')
-        self.assertEqual(sub_keys[13], '11111110000110011001010101011110101010101100110011110001')
-        self.assertEqual(sub_keys[14], '11111000011001100101010101111010101010110011001111000111')
-        self.assertEqual(sub_keys[15], '11110000110011001010101011110101010101100110011110001111')
-
     def test_compression_keys(self):
-
-
-
-        # sub_keys = list(map(lambda x: des.rearrange(x, tables.compressionPermutationTable), sub_keys))
-        # test = des.rearrange(sub_keys[0], tables.compressionPermutationTable)
-
-        # k = des.rearrange(des.text_to_arr('11100001100110010101010111111010101011001100111100011110'), tables.compressionPermutationTable)
-        # self.assertEqual(k, des.text_to_arr('000110110000001011101111111111000111000001110010'))
-        #
-
-        # Kompresja pojedyczego klucza
         cd = des.rearrange(des.text_to_arr('11100001100110010101010111111010101011001100111100011110'), tables.compressionPermutationTable)
         desired = des.text_to_arr('000110110000001011101111111111000111000001110010')
         self.assertEqual(cd, desired)
@@ -226,7 +190,7 @@ class TestPermutation(unittest.TestCase):
                    0,1,1,0,1,1,0,1,
                    0,0,1,0,0,1,0,0,
                    0,0,1,1,1,0,1,0,
-                   0,0,1,0,1,0,0,1,]
+                   0,0,1,0,1,0,0,1]
 
         key = [0, 1, 0, 0, 0, 0, 0, 1,
                         0, 0, 0, 1, 0, 1, 0, 0,
@@ -238,10 +202,13 @@ class TestPermutation(unittest.TestCase):
                         0, 1, 0, 0, 0, 1, 0, 1,
                         0, 0, 0, 1, 0, 0, 1, 0]
 
-        encrypted = des.encrypt1(plain, key)
+        encrypted = des.encrypt(plain, key)
+        decrypted = des.decrypt(encrypted, key)
+        print('ENCRYPTED: ' + ''.join(str(i) for i in encrypted))
+        print('DECRYPTED: ' + ''.join(str(i) for i in decrypted))
+        print('PLAIN:     ' + ''.join(str(i) for i in plain))
 
-
-        # self.assertEqual(encrypted, des.ascii_to_bytes_arr('0000000000000000'))
+        self.assertEqual(decrypted, plain)
 
 
     # def test_all(self):

@@ -121,25 +121,13 @@ def generate_sub_keys(key):
 def compress_keys():
     pass
 
-def encrypt(arr, key, encrypt=True):
-    ip = rearrange(arr, tables.initialPermutationTable)
-    key = rearrange(key, tables.keyPermutationTable)
+def encrypt(arr, key):
+    return des(arr, key, encrypt=True)
 
-    l_block, r_block = split_half(ip)
-    new_left = r_block
+def decrypt(arr, key):
+    return des(arr, key, encrypt=False)
 
-    sub_key = generate_sub_key(key, 0)
-    sub_key = rearrange(sub_key, tables.compressionPermutationTable)
-    r_block = rearrange(r_block, tables.extensionPermutationTable)
-    r_block = xor_arr(r_block, sub_key)
-    r_block = s_box_substitution(r_block)
-    r_block = rearrange(r_block, tables.pBlockPermutationTable)
-    r_block = xor_arr(r_block, l_block)
-
-    return new_left + r_block
-
-
-def encrypt1(arr, key, encrypt=True):
+def des(arr, key, encrypt=True):
     ip = rearrange(arr, tables.initialPermutationTable)
     key = rearrange(key, tables.keyPermutationTable)
 
@@ -147,9 +135,11 @@ def encrypt1(arr, key, encrypt=True):
     sub_keys = generate_sub_keys(key)
     sub_keys = list(map(lambda x: rearrange(x, tables.compressionPermutationTable), sub_keys))
 
+    if not encrypt:
+        sub_keys.reverse()
+
     current_block = ip
     for sub_key in sub_keys:
-
         l_block, r_block = split_half(current_block)
         new_left = r_block
 
@@ -161,57 +151,7 @@ def encrypt1(arr, key, encrypt=True):
 
         current_block = new_left + r_block
 
-    return final_permutation(current_block)
+    last_chunk_left, last_chunk_right = split_half(current_block)
 
-
-def decrypt1(arr, key, encrypt=True):
-    ip = rearrange(arr, tables.initialPermutationTable)
-    key = rearrange(key, tables.keyPermutationTable)
-
-    # generate sub keys
-    sub_keys = generate_sub_keys(key)
-    sub_keys = list(map(lambda x: rearrange(x, tables.compressionPermutationTable), sub_keys))
-    sub_keys.reverse()
-
-    current_block = ip
-    for sub_key in sub_keys:
-
-        l_block, r_block = split_half(current_block)
-        new_left = r_block
-
-        r_block = rearrange(r_block, tables.extensionPermutationTable)
-        r_block = xor_arr(r_block, sub_key)
-        r_block = s_box_substitution(r_block)
-        r_block = rearrange(r_block, tables.pBlockPermutationTable)
-        r_block = xor_arr(r_block, l_block)
-
-        current_block = new_left + r_block
-
-    return final_permutation(current_block)
-
-
-def decrypt2(arr, key, encrypt=True):
-    ip = rearrange(arr, tables.initialPermutationTable)
-    key = rearrange(key, tables.keyPermutationTable)
-
-    # generate sub keys
-    sub_keys = generate_sub_keys(key)
-    sub_keys = list(map(lambda x: rearrange(x, tables.compressionPermutationTable), sub_keys))
-    sub_keys.reverse()
-
-    current_block = ip
-    for sub_key in sub_keys:
-
-        l_block, r_block = split_half(current_block)
-        new_left = r_block
-
-        r_block = rearrange(r_block, tables.extensionPermutationTable)
-        r_block = xor_arr(r_block, sub_key)
-        r_block = s_box_substitution(r_block)
-        r_block = rearrange(r_block, tables.pBlockPermutationTable)
-        r_block = xor_arr(r_block, l_block)
-
-        current_block = new_left + r_block
-
-    return final_permutation(current_block)
+    return final_permutation(last_chunk_right + last_chunk_left)
 
